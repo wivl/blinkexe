@@ -1,3 +1,10 @@
+# BLINK modified
+.vs
+out
+build
+CMakeSettings.json
+
+
 # Prerequisites
 *.d
 
