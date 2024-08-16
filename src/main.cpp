@@ -1,34 +1,31 @@
-#include "core/core.hpp"
-#include <iostream>
-#include <glad/glad.h>
-#include <glfw/glfw3.h>
-
-const int BLINK_WINDOW_WIDTH{ 800 };
-const int BLINK_WINDOW_HEIGHT{ 600 };
+#include "config.hpp"
+#include "app.hpp"
 
 int main() {
-	std::cout << "BLINK.EXE INITIALIZING" << std::endl;
-	if (!glfwInit()) {
-		std::cout << "GLFW countn't start" << std::endl;
-		return -1;
-	}
-	GLFWwindow* window{ glfwCreateWindow(BLINK_WINDOW_WIDTH, BLINK_WINDOW_HEIGHT, "BLINK", nullptr, nullptr) };
-	glfwMakeContextCurrent(window);
+	auto app = std::make_shared<App>();
+	unsigned int cube_entity{ app->make_entity() };
+	TransformComponent transform;
+	transform.position = { 3.0f, 0.0f, 0.25f };
+	transform.eulers = { 0.0f, 0.0f, 0.0f };
+	app->transform_components[cube_entity] = transform;
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		glfwTerminate();
-		return -1;
-	}
+	RenderComponent render;
+	render.mesh = app->make_cube_mesh({0.25f, 0.25f, 0.25f });
+	render.material = app->make_texture("../assets/concrete.jpg");
+	app->render_components[cube_entity] = render;
 
-	glClearColor(0.25f, 0.5f, 0.75f, 1.0f);
+	unsigned int camera_entity{ app->make_entity() };
+	transform.position = { 0.0f, 0.0f, 1.0f };
+	transform.eulers = { 0.0f, 0.0f, 0.0f };
+	app->transform_components[camera_entity] = transform;
 
-	while (!glfwWindowShouldClose(window)) {
-		glfwPollEvents();
+	app->camera_component = std::make_shared<CameraComponent>();
+	app->camera_id = camera_entity;
 
-		glClear(GL_COLOR_BUFFER_BIT);
-		glfwSwapBuffers(window);
-	}
+	app->setup_opengl();
+	app->make_systems();
+	app->run();
 
-	glfwTerminate();
-	return 0;
-}
+}	
+
+

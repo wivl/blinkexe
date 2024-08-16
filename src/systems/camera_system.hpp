@@ -1,0 +1,27 @@
+#pragma once
+
+#include "../components/transform_component.hpp"
+#include "../components/camera_component.hpp"
+#include "../config.hpp"
+
+
+class CameraSystem {
+private:
+	unsigned int view_uniform_location; // "view" matrix uniform location
+	glm::vec3 global_up = { 0.0f, 0.0f, 1.0f }; // up vector
+	GLFWwindow* window;
+public:
+	CameraSystem() = delete;
+	CameraSystem(unsigned int shader, GLFWwindow* window);
+	~CameraSystem();
+	
+	bool update(
+		std::unordered_map<unsigned int, TransformComponent>& transform_components,
+		unsigned int camera_id,
+		CameraComponent& camera_component,
+		float delta_time
+	);
+
+
+
+};
