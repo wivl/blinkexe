@@ -1,11 +1,16 @@
 #pragma once
 
+// 需要渲染的组件
 class RenderComponent {
 public:
 	unsigned int material;
 	unsigned int mesh;
+
 public:
-	RenderComponent() = default;
-	RenderComponent(unsigned int material, unsigned int mesh) : material{ material }, mesh{ mesh } {};
+	RenderComponent() = delete;
+	RenderComponent(unsigned int material, unsigned int mesh) {
+		this->material = material;
+		this->mesh = mesh;
+	}
 	~RenderComponent() = default;
 };

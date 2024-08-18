@@ -4,11 +4,16 @@
 
 class TransformComponent {
 public:
-	glm::vec3 position; // 位置
-	glm::vec3 eulers;   // 欧拉角
+	glm::vec3 position;
+	// TODO: 更新旋转底层处理为四元数
+	glm::vec3 rotation;
+	glm::vec3 scale;
 public:
-	TransformComponent() = default;
-	TransformComponent(glm::vec3 position, glm::vec3 eulers) : position{ position }, eulers{ eulers } {};
-
+	TransformComponent() = delete;
+	TransformComponent(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
+		this->position = position;
+		this->rotation = rotation;
+		this->scale = scale;
+	}
 	~TransformComponent() = default;
 };
