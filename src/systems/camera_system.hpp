@@ -1,24 +1,17 @@
 #pragma once
-
-#include "../components/transform_component.hpp"
-#include "../components/camera_component.hpp"
 #include "../config.hpp"
-
+#include "../components/camera_component.hpp"
+#include "../components/transform_component.hpp"
 
 class CameraSystem {
 private:
-	unsigned int view_uniform_location;
-	unsigned int shader;
-	GLFWwindow* window;
+    unsigned int viewLocation;
+    glm::vec3 global_up = {0.0f, 0.0f, 1.0f};
+    GLFWwindow* window;
 public:
-	CameraSystem() = delete;
-	CameraSystem(unsigned int shader, GLFWwindow* window);
-	~CameraSystem() = default;
+    CameraSystem(unsigned int shader, GLFWwindow* window);
 
-	void update(
-		std::unordered_map<unsigned int, TransformComponent>& transform_components,
-		unsigned int camera_id,
-		CameraComponent& camera_component,
-		float delta_time
-	);
+    bool update(
+        std::unordered_map<unsigned int,TransformComponent> &transformComponents,
+        unsigned int cameraID, CameraComponent& cameraComponent, float dt);
 };

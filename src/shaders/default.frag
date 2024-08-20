@@ -1,8 +1,16 @@
 #version 330 core
 
-out vec4 FragColor;
+in vec2 fragmentTexCoord;
+in vec3 fragmentNormal;
+
+out vec4 screenColor;
+
+uniform sampler2D material;
+
+const vec3 sunDirection = normalize(vec3(-1.0, 1.0, 1.0));
 
 void main()
 {
-    FragColor = vec4(1.0, 0.5, 0.5, 1.0);
+    float lightStrength = max(0.2, dot(fragmentNormal, sunDirection));
+    screenColor = vec4(lightStrength * texture(material, fragmentTexCoord).rgb, 1.0);
 }

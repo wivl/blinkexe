@@ -17,15 +17,19 @@ add_subdirectory(${GLM_PATH} ${CMAKE_BINARY_DIR}/glm)
 add_library(stb STATIC dependencies/stb/stb_image.cpp)
 target_include_directories(stb PUBLIC dependencies/stb)
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS 
-	src/*.cpp
-	src/components/*.cpp
-	src/systems/*.cpp
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+		src/*.cpp
+		src/components/*.cpp
+		src/systems/*.cpp
+		src/factories/*.cpp
+		src/utils/*.cpp
 )
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
-	src/*.hpp
-	src/components/*.hpp
-	src/systems/*.hpp
+		src/*.hpp
+		src/components/*.hpp
+		src/systems/*.hpp
+		src/factories/*.hpp
+		src/utils/*.hpp
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS})

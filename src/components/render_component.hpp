@@ -1,16 +1,11 @@
 #pragma once
+#include "../config.hpp"
 
-// 需要渲染的组件
 class RenderComponent {
 public:
-	unsigned int material;
-	unsigned int mesh;
+    unsigned int material, VAO, vertexCount;
+    RenderComponent() = default;
+    RenderComponent(unsigned int material, unsigned int VAO, unsigned int vertexCount) : material(material), VAO(VAO), vertexCount(vertexCount) {}
+    ~RenderComponent() = default;
 
-public:
-	RenderComponent() = delete;
-	RenderComponent(unsigned int material, unsigned int mesh) {
-		this->material = material;
-		this->mesh = mesh;
-	}
-	~RenderComponent() = default;
 };

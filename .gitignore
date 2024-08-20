@@ -3,6 +3,10 @@
 out
 build
 CMakeSettings.json
+.cache
+.idea
+cmake-build-debug
+
 
 
 # Prerequisites

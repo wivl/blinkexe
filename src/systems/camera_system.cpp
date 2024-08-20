@@ -1,69 +1,87 @@
 #include "camera_system.hpp"
 
 CameraSystem::CameraSystem(unsigned int shader, GLFWwindow* window) {
-	this->shader = shader;
-	this->window = window;
+    this->window = window;
 
-	glUseProgram(shader);
-	view_uniform_location = glGetUniformLocation(shader, "view");
+    glUseProgram(shader);
+    viewLocation = glGetUniformLocation(shader, "view");
 }
 
+bool CameraSystem::update(
+    std::unordered_map<unsigned int,TransformComponent> &transformComponents,
+    unsigned int cameraID, CameraComponent& cameraComponent, float dt) {
 
-void CameraSystem::update(std::unordered_map<unsigned int, TransformComponent>& transform_components, unsigned int camera_id, CameraComponent& camera_component, float delta_time) {
-	auto& transform = transform_components.at(camera_id);
+    glm::vec3& pos = transformComponents[cameraID].position;
+    glm::vec3& eulers = transformComponents[cameraID].eulers;
+    float theta = glm::radians(eulers.z);
+    float phi = glm::radians(eulers.y);
 
-	// 获得鼠标输入，更新欧拉角
-	double x_pos = 0.0f, y_pos = 0.0f;
-	double screen_center_x = static_cast<double>(BLINK_WINDOW_WIDTH)/2.0f;
-	double screen_center_y = static_cast<double>(BLINK_WINDOW_HEIGHT)/2.0f;
-	glfwGetCursorPos(this->window, &x_pos, &y_pos);
-	glfwSetCursorPos(this->window, screen_center_x, screen_center_y);
-	glfwPollEvents();
+    glm::vec3& right = cameraComponent.right;
+    glm::vec3& up = cameraComponent.up;
+    glm::vec3& forwards = cameraComponent.forwards;
 
-	double xoffset = x_pos - screen_center_x, yoffset = y_pos - screen_center_y;
-	float d_pitch = yoffset * camera_component.mouse_sensitivity;
-	float d_yaw = xoffset * camera_component.mouse_sensitivity;
+    forwards = {
+        glm::cos(theta) * glm::cos(phi),
+        glm::sin(theta) * glm::cos(phi),
+        glm::sin(phi)
+    };
+    right = glm::normalize(glm::cross(forwards, global_up));
+    up = glm::normalize(glm::cross(right, forwards));
 
-	camera_component.pitch += d_pitch;
-	camera_component.yaw += d_yaw;
+    glm::mat4 view = glm::lookAt(pos, pos + forwards, up);
 
-	if (camera_component.pitch > 89.0f) {
-		camera_component.pitch = 89.0f;
-	}
-	if (camera_component.pitch < -89.0f) {
-		camera_component.pitch = -89.0f;
-	}
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
-	glm::vec3 temp_direction = glm::vec3(0.0f, 0.0f, 0.0f);
-	temp_direction.x = cos(glm::radians(camera_component.pitch)) * cos(glm::radians(camera_component.yaw));
-	temp_direction.y = sin(glm::radians(camera_component.pitch));
-	temp_direction.z = cos(glm::radians(camera_component.pitch)) * sin(glm::radians(camera_component.yaw));	
-	camera_component.direction = glm::normalize(-temp_direction);
-	camera_component.update_status();
+    //Keys
+    glm::vec3 dPos = {0.0f, 0.0f, 0.0f};
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        dPos.x += 1.0f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        dPos.y -= 1.0f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        dPos.x -= 1.0f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        dPos.y += 1.0f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        dPos.z += 1.0f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+        dPos.z -= 1.0f;
+    }
+    if (glm::length(dPos) > 0.1f) {
+        dPos = glm::normalize(dPos);
+        pos += 0.1f * dPos.x * forwards;
+        pos += 0.1f * dPos.y * right;
+        pos += 0.1f * dPos.z * up;
+    }
 
-	
-	
-	// 获得键盘输入，更新 transform
-	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(this->window, true);
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_W) == GLFW_PRESS) {
-		transform.position -= camera_component.move_speed * delta_time * camera_component.direction;
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_S) == GLFW_PRESS) {
-		transform.position += camera_component.move_speed * delta_time * camera_component.direction;
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_A) == GLFW_PRESS) {
-		transform.position -= camera_component.move_speed * delta_time * camera_component.right;
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_D) == GLFW_PRESS) {
-		transform.position += camera_component.move_speed * delta_time * camera_component.right;
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		transform.position += camera_component.move_speed * delta_time * glm::vec3(0.0f, 1.0f, 0.0f);
-	}
-	if (glfwGetKey(this->window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		transform.position -= camera_component.move_speed * delta_time * glm::vec3(0.0f, 1.0f, 0.0f);
-	}
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        return true;
+    }
 
+    //Mouse
+    glm::vec3 dEulers = {0.0f, 0.0f, 0.0f};
+    double mouse_x, mouse_y;
+    glfwGetCursorPos(window, &mouse_x, &mouse_y);
+    glfwSetCursorPos(window, 320.0, 240.0);
+    glfwPollEvents();
+
+    dEulers.z = -0.1f * static_cast<float>(mouse_x - 320.0);
+    dEulers.y = -0.1f * static_cast<float>(mouse_y - 240.0);
+
+    eulers.y = fminf(89.0f, fmaxf(-89.0f, eulers.y + dEulers.y));
+
+    eulers.z += dEulers.z;
+    if (eulers.z > 360) {
+        eulers.z -= 360;
+    }
+    else if (eulers.z < 0) {
+        eulers.z += 360;
+    }
+
+    return false;
 }
