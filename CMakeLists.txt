@@ -17,6 +17,10 @@ add_subdirectory(${GLM_PATH} ${CMAKE_BINARY_DIR}/glm)
 add_library(stb STATIC dependencies/stb/stb_image.cpp)
 target_include_directories(stb PUBLIC dependencies/stb)
 
+# tinyobjloader
+add_library(tinyobjloader STATIC dependencies/tinyobjloader/tiny_obj_loader.cc)
+target_include_directories(tinyobjloader PUBLIC dependencies/tinyobjloader)
+
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 		src/*.cpp
 		src/components/*.cpp
@@ -38,3 +42,4 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC glm)
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC glfw)
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC glad)
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC stb)
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC tinyobjloader)
