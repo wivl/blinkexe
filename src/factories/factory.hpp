@@ -4,6 +4,7 @@
 #include "../components/physics_component.hpp"
 #include "../components/render_component.hpp"
 #include "../components/transform_component.hpp"
+#include "../utils/model_loader.hpp"
 
 class Factory {
 
@@ -20,6 +21,8 @@ public:
     void make_cube(glm::vec3 position, glm::vec3 eulers,
         glm::vec3 eulerVelocity);
 
+    RenderComponent make_cube_mesh(glm::vec3 size);
+    void make_girl(glm::vec3 position, glm::vec3 eulers);
 private:
 
     unsigned int entities_made = 0;
@@ -32,7 +35,7 @@ private:
     std::vector<unsigned int> VBOs;
     std::vector<unsigned int> textures;
 
-    RenderComponent make_cube_mesh(glm::vec3 size);
-    unsigned int make_texture(const char* filename);
+    ModelLoader model_loader;
+
 
 };

@@ -27,21 +27,22 @@ unsigned int Factory::make_camera(glm::vec3 position, glm::vec3 eulers) {
     return entities_made++;
 }
 
+
 void Factory::make_cube(glm::vec3 position, glm::vec3 eulers,
     glm::vec3 eulerVelocity) {
 
-	TransformComponent transform;
+	TransformComponent transform{};
 	transform.position = position;
 	transform.eulers = eulers;
 	transformComponents[entities_made] = transform;
 
-	PhysicsComponent physics;
+	PhysicsComponent physics{};
 	physics.velocity = {0.0f, 0.0f, 0.0f};
 	physics.eulerVelocity = eulerVelocity;
 	physicsComponents[entities_made] = physics;
 
 	RenderComponent render = make_cube_mesh({0.25f, 0.25f, 0.25f});
-	render.material = make_texture("../assets/brick.png");
+	model_loader.set_texture(render, "../assets/brick.png");
 	renderComponents[entities_made++] = render;
 }
 
@@ -122,33 +123,25 @@ RenderComponent Factory::make_cube_mesh(glm::vec3 size) {
     return record;
 }
 
-unsigned int Factory::make_texture(const char* filename) {
+// TODO: make girl
+void Factory::make_girl(glm::vec3 position, glm::vec3 eulers) {
+    TransformComponent transform{};
+    transform.position = position;
+    transform.eulers = eulers;
+    transformComponents[entities_made] = transform;
 
-    int width, height, channels;
-    stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(
-        filename, &width, &height, &channels, STBI_rgb_alpha);
 
-	//make the texture
-    unsigned int texture;
-	glGenTextures(1, &texture);
-    textures.push_back(texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glm::mat4 preTransform = glm::mat4(1.0f);
+    preTransform = glm::rotate(preTransform,
+        glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
+    preTransform = glm::rotate(preTransform,
+        glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
+    RenderComponent render = model_loader.load("../assets/girl.obj");
+    model_loader.set_texture(render, "../assets/stargirl.png");
+    renderComponents[entities_made++] = render;
 
-    //load data
-    glTexImage2D(GL_TEXTURE_2D,
-        0, GL_RGBA, width, height, 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    //free data
-	stbi_image_free(data);
-
-    //Configure sampler
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    return texture;
 }
+
+
+
+// TODO: 理解 ecs 并修改
