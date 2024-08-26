@@ -14,10 +14,10 @@ int main() {
         app->physicsComponents,
         app->renderComponents, app->transformComponents);
 
-    factory->make_cube(
+    factory->make_sphere(
         {3.0f, 0.0f, 0.25f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 10.0f});
 
-    factory->make_girl({5.0f, 0.0f, 0.25f}, {0.0f, 0.0f, 180.0f});
+    // factory->make_girl({5.0f, 0.0f, 0.25f}, {0.0f, 0.0f, 180.0f});
 
     unsigned int cameraEntity = factory->make_camera(
         {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f,0.0f});

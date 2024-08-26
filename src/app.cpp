@@ -15,17 +15,15 @@ App::~App() {
 }
 
 void App::run() {
-
     while (!glfwWindowShouldClose(window)) {
-
-        motionSystem->update(
-            transformComponents, physicsComponents, 16.67f/1000.0f);
-        bool should_close = cameraSystem->update(
-            transformComponents, cameraID, *cameraComponent, 16.67f/1000.0f);
+    	// 更新 motion system
+        motionSystem->update(transformComponents, physicsComponents, 16.67f/1000.0f);
+    	// 更新 camera system
+        bool should_close = cameraSystem->update(transformComponents, cameraID, *cameraComponent, 16.67f/1000.0f);
 		if (should_close) {
 			break;
 		}
-
+    	// 更新 render system
 		renderSystem->update(transformComponents, renderComponents);
 	}
 }
@@ -68,6 +66,7 @@ void App::set_up_opengl() {
 		"../src/shaders/default.frag");
 
     glUseProgram(shader);
+	// 投影矩阵，不依赖于摄像机
 	unsigned int projLocation = glGetUniformLocation(shader, "projection");
 	glm::mat4 projection = glm::perspective(
 		45.0f, 640.0f / 480.0f, 0.1f, 10.0f);

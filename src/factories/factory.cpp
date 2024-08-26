@@ -136,12 +136,32 @@ void Factory::make_girl(glm::vec3 position, glm::vec3 eulers) {
         glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
     preTransform = glm::rotate(preTransform,
         glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
-    RenderComponent render = model_loader.load("../assets/girl.obj");
+    RenderComponent render = model_loader.load("../assets/girl.obj", preTransform);
     model_loader.set_texture(render, "../assets/stargirl.png");
     renderComponents[entities_made++] = render;
 
 }
 
 
+void Factory::make_sphere(glm::vec3 position, glm::vec3 eulers, glm::vec3 eulerVelocity) {
+    TransformComponent transform{};
+    transform.position = position;
+    transform.eulers = eulers;
+    transformComponents[entities_made] = transform;
 
-// TODO: 理解 ecs 并修改
+    PhysicsComponent physics{};
+    physics.velocity = {0.0f, 0.0f, 0.0f};
+    physics.eulerVelocity = eulerVelocity;
+    physicsComponents[entities_made] = physics;
+
+    glm::mat4 preTransform = glm::mat4(1.0f);
+    preTransform = glm::rotate(preTransform, glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
+    preTransform = glm::rotate(preTransform, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
+
+    RenderComponent render = model_loader.load("../assets/sphere.obj", preTransform);
+    model_loader.set_texture(render, "../assets/brick.png");
+    renderComponents[entities_made++] = render;
+}
+
+
+

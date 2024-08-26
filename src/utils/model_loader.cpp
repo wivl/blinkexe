@@ -5,7 +5,7 @@ ModelLoader::ModelLoader() {
 }
 
 
-RenderComponent ModelLoader::load(std::string file_path) {
+RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preTransform) {
     if (!this->reader.ParseFromFile(file_path, this->config)) {
         if (!this->reader.Error().empty()) {
             std::cout << "TinyObjLoader: " << this->reader.Error() << std::endl;
@@ -38,9 +38,17 @@ RenderComponent ModelLoader::load(std::string file_path) {
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
 
                 // Position
-                vertices.push_back(attrib.vertices[3 * static_cast<size_t>(idx.vertex_index) + 0]);
-                vertices.push_back(attrib.vertices[3 * static_cast<size_t>(idx.vertex_index) + 1]);
-                vertices.push_back(attrib.vertices[3 * static_cast<size_t>(idx.vertex_index) + 2]);
+                glm::vec4 vertex = glm::vec4(
+                    attrib.vertices[3 * static_cast<size_t>(idx.vertex_index) + 0],
+                    attrib.vertices[3 * static_cast<size_t>(idx.vertex_index) + 1],
+                    attrib.vertices[3 * static_cast<size_t>(idx.vertex_index) + 2],
+                    1
+                );
+                vertex = preTransform * vertex;
+
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
 
                 // UV
                 assert(idx.texcoord_index >= 0);
@@ -52,9 +60,17 @@ RenderComponent ModelLoader::load(std::string file_path) {
                 // Normal
                 assert(idx.normal_index >= 0);
                 if (idx.normal_index >= 0) {
-                    vertices.push_back(attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 0]);
-                    vertices.push_back(attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 1]);
-                    vertices.push_back(attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 2]);
+
+                    glm::vec4 normal = glm::vec4(
+                        attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 0],
+                        attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 1],
+                        attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 2],
+                        0
+                    );
+                    normal = preTransform * normal;
+                    vertices.push_back(normal.x);
+                    vertices.push_back(normal.y);
+                    vertices.push_back(normal.z);
                 }
 
             }

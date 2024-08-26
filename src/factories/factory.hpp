@@ -9,6 +9,7 @@
 class Factory {
 
 public:
+    // 获得组件 map 的引用
     Factory(
         std::unordered_map<unsigned int, PhysicsComponent>& physicsComponents,
         std::unordered_map<unsigned int, RenderComponent>& renderComponents,
@@ -16,12 +17,13 @@ public:
 
     ~Factory();
 
+    // 创建摄像机
     unsigned int make_camera(glm::vec3 position, glm::vec3 eulers);
 
-    void make_cube(glm::vec3 position, glm::vec3 eulers,
-        glm::vec3 eulerVelocity);
+    void make_cube(glm::vec3 position, glm::vec3 eulers, glm::vec3 eulerVelocity);
 
-    RenderComponent make_cube_mesh(glm::vec3 size);
+    void make_sphere(glm::vec3 position, glm::vec3 eulers, glm::vec3 eulerVelocity);
+
     void make_girl(glm::vec3 position, glm::vec3 eulers);
 private:
 
@@ -37,5 +39,6 @@ private:
 
     ModelLoader model_loader;
 
+    RenderComponent make_cube_mesh(glm::vec3 size);
 
 };
