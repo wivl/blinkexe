@@ -6,6 +6,7 @@
 class CameraSystem {
 private:
     unsigned int viewLocation;
+    unsigned int cameraPositionLocation;
     glm::vec3 global_up = {0.0f, 0.0f, 1.0f};
     GLFWwindow* window;
 public:

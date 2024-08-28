@@ -5,6 +5,7 @@ CameraSystem::CameraSystem(unsigned int shader, GLFWwindow* window) {
 
     glUseProgram(shader);
     viewLocation = glGetUniformLocation(shader, "view");
+    cameraPositionLocation = glGetUniformLocation(shader, "cameraPosition");
 }
 
 bool CameraSystem::update(
@@ -31,6 +32,7 @@ bool CameraSystem::update(
     glm::mat4 view = glm::lookAt(pos, pos + forwards, up);
 
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
+    glUniform3fv(cameraPositionLocation, 1, glm::value_ptr(pos));
 
     //Keys
     glm::vec3 dPos = {0.0f, 0.0f, 0.0f};

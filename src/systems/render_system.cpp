@@ -27,6 +27,7 @@ void RenderSystem::update(
             glm::value_ptr(model));
 
         // 绑定唯一的材质到 slot 0
+        // TODO: 设置多个材质槽位
         glBindTexture(GL_TEXTURE_2D, renderable.material);
         // 绑定 vao 后渲染
         glBindVertexArray(renderable.VAO);

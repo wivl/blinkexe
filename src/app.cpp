@@ -16,6 +16,7 @@ App::~App() {
 
 void App::run() {
     while (!glfwWindowShouldClose(window)) {
+	    // std::cout << "Running" << std::endl;
     	// 更新 motion system
         motionSystem->update(transformComponents, physicsComponents, 16.67f/1000.0f);
     	// 更新 camera system
@@ -69,7 +70,7 @@ void App::set_up_opengl() {
 	// 投影矩阵，不依赖于摄像机
 	unsigned int projLocation = glGetUniformLocation(shader, "projection");
 	glm::mat4 projection = glm::perspective(
-		45.0f, 640.0f / 480.0f, 0.1f, 10.0f);
+		45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
 	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projection));
 }
 
