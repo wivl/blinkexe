@@ -1,19 +1,20 @@
 #version 330 core
 
+out vec4 FragColor;
+
 in vec4 position;
 in vec2 texcoord;
 in vec3 normal;
 
-out vec4 FragColor;
 
-uniform sampler2D material;
+uniform sampler2D albedo;
 
 uniform vec3 cameraPosition;
 vec3 lightPosition = vec3(4, 5, 3);
 vec3 lightColor = vec3(3.0, 3.0, 3.0);
 vec3 emissivityMesh = vec3(0.0);
 float roughness = 0.0;
-float metallic = 0.5;
+float metallic = 0.0;
 // uniform vec3 baseReflectance;
 
 #define PI 3.1415926
@@ -89,7 +90,7 @@ void main()
     vec3 H = normalize(V + L);                      // half-way vector
 
 //    vec3 Color = vec3(1.0, 0.0, 0.0);
-    vec3 Color = texture(material, texcoord).rgb;
+    vec3 Color = texture(albedo, texcoord).rgb;
 
 //    FragColor = vec4(1.0);
     FragColor = vec4(PBR(roughness, N, V, L, H, Color), 1.0);

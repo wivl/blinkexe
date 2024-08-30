@@ -15,5 +15,6 @@ public:
 private:
 
     unsigned int modelLocation;
+    unsigned int normalLocation;
     GLFWwindow* window;
 };
