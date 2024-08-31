@@ -5,7 +5,7 @@ ModelLoader::ModelLoader() {
 }
 
 
-RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preModelMatrix) {
+RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preTransform) {
     if (!this->reader.ParseFromFile(file_path, this->config)) {
         if (!this->reader.Error().empty()) {
             std::cout << "TinyObjLoader: " << this->reader.Error() << std::endl;
@@ -23,7 +23,6 @@ RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preModelMatri
 
     std::vector<float> vertices;
 
-    glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(preModelMatrix)));
 
     // s: shape index
     for (size_t s = 0; s < shapes.size(); s++) {
@@ -46,7 +45,7 @@ RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preModelMatri
                     attrib.vertices[3 * static_cast<size_t>(idx.vertex_index) + 2],
                     1
                 );
-                vertex = preModelMatrix * vertex;
+                vertex = preTransform * vertex;
 
                 vertices.push_back(vertex.x);
                 vertices.push_back(vertex.y);
@@ -63,12 +62,13 @@ RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preModelMatri
                 assert(idx.normal_index >= 0);
                 if (idx.normal_index >= 0) {
 
-                    glm::vec3 normal = glm::vec3(
+                    glm::vec4 normal = glm::vec4(
                         attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 0],
                         attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 1],
-                        attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 2]
+                        attrib.normals[3 * static_cast<size_t>(idx.normal_index) + 2],
+                        0.0f
                     );
-                    normal = normalMatrix * normal;
+                    normal = preTransform * normal;
                     vertices.push_back(normal.x);
                     vertices.push_back(normal.y);
                     vertices.push_back(normal.z);

@@ -14,6 +14,7 @@ public:
 
 private:
 
+    unsigned int shader;
     unsigned int modelLocation;
     unsigned int normalLocation;
     GLFWwindow* window;
