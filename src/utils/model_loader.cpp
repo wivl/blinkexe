@@ -103,7 +103,7 @@ RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preTransform)
 }
 
 void ModelLoader::set_texture(RenderComponent &render_component, std::string texture_path) {
-    render_component.material = make_texture(texture_path.c_str());
+    render_component.albedo = make_texture(texture_path.c_str());
 }
 
 unsigned int ModelLoader::make_texture(const char* filename) {

@@ -30,12 +30,13 @@ void RenderSystem::update(
         // 更新 normal matrix 到 gpu
         glUniformMatrix3fv(normalLocation, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 
-        glUniform3fv(glGetUniformLocation(shader, "albedo"), 1, glm::value_ptr(glm::vec3(0.5f, 0.0f, 0.0f)));
-        glUniform1f(glGetUniformLocation(shader, "metallic"), 0.5f);
-        glUniform1f(glGetUniformLocation(shader, "roughness"), 0.5f);
-        glUniform1f(glGetUniformLocation(shader, "ao"), 1.0f);
+        glUniform1i(glGetUniformLocation(shader, "albedoMap"), 0);
+        glUniform1i(glGetUniformLocation(shader, "normalMap"), 1);
+        glUniform1i(glGetUniformLocation(shader, "metallicMap"), 2);
+        glUniform1i(glGetUniformLocation(shader, "roughnessMap"), 3);
+        glUniform1i(glGetUniformLocation(shader, "aoMap"), 4);
         int lightNum = 4;
-        glUniform1i(glGetUniformLocation(shader, "lightNum"), 4);
+        glUniform1i(glGetUniformLocation(shader, "lightNum"), lightNum);
 
         glm::vec3 lightPositions[] = {
             glm::vec3(-10.0f,  10.0f, 10.0f),
@@ -58,7 +59,16 @@ void RenderSystem::update(
 
         // 绑定唯一的材质到 slot 0
         // TODO: 设置多个材质槽位
-        glBindTexture(GL_TEXTURE_2D, renderable.material);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, renderable.albedo);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, renderable.normal);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, renderable.metallic);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, renderable.roughness);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, renderable.ao);
         // 绑定 vao 后渲染
         glBindVertexArray(renderable.VAO);
         glDrawArrays(GL_TRIANGLES, 0, renderable.vertexCount);

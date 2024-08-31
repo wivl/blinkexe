@@ -159,7 +159,13 @@ void Factory::make_sphere(glm::vec3 position, glm::vec3 eulers, glm::vec3 eulerV
     preTransform = glm::rotate(preTransform, glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
 
     RenderComponent render = model_loader.load("../assets/sphere.obj", preTransform);
-    model_loader.set_texture(render, "../assets/brick.png");
+
+    render.albedo = model_loader.make_texture("../assets/rustediron1-alt2-Unreal-Engine/basecolor.png");
+    render.normal = model_loader.make_texture("../assets/rustediron1-alt2-Unreal-Engine/normal.png");
+    render.metallic = model_loader.make_texture("../assets/rustediron1-alt2-Unreal-Engine/metallic.png");
+    render.roughness = model_loader.make_texture("../assets/rustediron1-alt2-Unreal-Engine/roughness.png");
+    render.ao = model_loader.make_texture("../assets/rustediron1-alt2-Unreal-Engine/ao.png");
+
     renderComponents[entities_made++] = render;
 }
 
