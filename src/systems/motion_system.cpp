@@ -1,15 +1,15 @@
 #include "motion_system.hpp"
 
 void MotionSystem::update(
-    std::unordered_map<unsigned int,TransformComponent> &transformComponents,
-    std::unordered_map<unsigned int,PhysicsComponent> &physicsComponents,
+    std::unordered_map<unsigned int,TransformComponent> &transform_components,
+    std::unordered_map<unsigned int,PhysicsComponent> &physics_components,
     float dt) {
 
-    for (auto& [entity, velocity] : physicsComponents) {
-        transformComponents[entity].position += velocity.velocity * dt;
-        transformComponents[entity].eulers += velocity.eulerVelocity * dt;
-        if (transformComponents[entity].eulers.z > 360) {
-            transformComponents[entity].eulers.z -= 360;
+    for (auto& [entity, velocity] : physics_components) {
+        transform_components[entity].position += velocity.velocity * dt;
+        transform_components[entity].eulers += velocity.euler_velocity * dt;
+        if (transform_components[entity].eulers.z > 360) {
+            transform_components[entity].eulers.z -= 360;
         }
     }
 }

@@ -6,26 +6,28 @@ App::App() {
 
 App::~App() {
     glDeleteProgram(shader);
-
-    delete motionSystem;
-    delete cameraSystem;
-    delete renderSystem;
-
+    delete motion_system;
+    delete camera_system;
+    delete render_system;
     glfwTerminate();
 }
 
 void App::run() {
+	float currentTime, deltaTime, lastTime;
     while (!glfwWindowShouldClose(window)) {
-	    // std::cout << "Running" << std::endl;
+    	currentTime = static_cast<float>(glfwGetTime());
+    	deltaTime = currentTime - lastTime;
+    	lastTime = currentTime;
+
     	// 更新 motion system
-        motionSystem->update(transformComponents, physicsComponents, 16.67f/1000.0f);
+        motion_system->update(transform_components, physics_components, deltaTime);
     	// 更新 camera system
-        bool should_close = cameraSystem->update(transformComponents, cameraID, *cameraComponent, 16.67f/1000.0f);
+        bool should_close = camera_system->update(transform_components, cameraID, *camera_component, deltaTime);
 		if (should_close) {
 			break;
 		}
     	// 更新 render system
-		renderSystem->update(transformComponents, renderComponents);
+		render_system->update(transform_components, render_components);
 	}
 }
 
@@ -37,7 +39,7 @@ void App::set_up_glfw() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
-	window = glfwCreateWindow(640, 480, "Hello Window!", NULL, NULL);
+	window = glfwCreateWindow(BLINK_WINDOW_WIDTH, BLINK_WINDOW_HEIGHT, BLINK_WINDOW_NAME, nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
@@ -50,7 +52,7 @@ void App::set_up_glfw() {
 
 void App::set_up_opengl() {
 
-    glClearColor(0.25f, 0.5f, 0.75f, 1.0f);
+    glClearColor(0.375f, 0.375f, 0.375f, 0.0f);
 	//Set the rendering region to the actual screen size
 	int w,h;
 	glfwGetFramebufferSize(window, &w, &h);
@@ -70,12 +72,12 @@ void App::set_up_opengl() {
 	// 投影矩阵，不依赖于摄像机
 	unsigned int projLocation = glGetUniformLocation(shader, "projection");
 	glm::mat4 projection = glm::perspective(
-		45.0f, 640.0f / 480.0f, 0.1f, 100.0f);
+		45.0f, static_cast<float>(BLINK_WINDOW_WIDTH) / static_cast<float>(BLINK_WINDOW_HEIGHT), 0.1f, 100.0f);
 	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projection));
 }
 
 void App::make_systems() {
-    motionSystem = new MotionSystem();
-    cameraSystem = new CameraSystem(shader, window);
-    renderSystem = new RenderSystem(shader, window);
+    motion_system = new MotionSystem();
+    camera_system = new CameraSystem(shader, window);
+    render_system = new RenderSystem(shader, window);
 }

@@ -40,30 +40,30 @@ unsigned int make_shader(
 unsigned int make_module(const std::string& filepath, unsigned int module_type) {
 
     std::ifstream file;
-    std::stringstream bufferedLines;
+    std::stringstream buffered_lines;
     std::string line;
 
     file.open(filepath);
     while (std::getline(file, line)) {
         //std::cout << line << std::endl;
-        bufferedLines << line << '\n';
+        buffered_lines << line << '\n';
     }
-    std::string shaderSource = bufferedLines.str();
-    const char* shaderSrc = shaderSource.c_str();
-    bufferedLines.str("");
+    std::string shader_source = buffered_lines.str();
+    const char* shader_src = shader_source.c_str();
+    buffered_lines.str("");
     file.close();
 
-    unsigned int shaderModule = glCreateShader(module_type);
-    glShaderSource(shaderModule, 1, &shaderSrc, NULL);
-    glCompileShader(shaderModule);
+    unsigned int shader_module = glCreateShader(module_type);
+    glShaderSource(shader_module, 1, &shader_src, nullptr);
+    glCompileShader(shader_module);
 
     int success;
-    glGetShaderiv(shaderModule, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(shader_module, GL_COMPILE_STATUS, &success);
     if (!success) {
-        char errorLog[1024];
-        glGetShaderInfoLog(shaderModule, 1024, NULL, errorLog);
-        std::cout << "Shader Module compilation error:\n" << errorLog << std::endl;
+        char error_log[1024];
+        glGetShaderInfoLog(shader_module, 1024, NULL, error_log);
+        std::cout << "Shader Module compilation error:\n" << error_log << std::endl;
     }
 
-    return shaderModule;
+    return shader_module;
 }

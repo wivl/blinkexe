@@ -19,8 +19,8 @@
 #include <memory>
 
 
-const int BLINK_WINDOW_WIDTH{ 800 };
-const int BLINK_WINDOW_HEIGHT{ 600 };
+const int BLINK_WINDOW_WIDTH{ 1280 };
+const int BLINK_WINDOW_HEIGHT{ 960 };
 const char* const BLINK_WINDOW_NAME{ "BLINK EXE" };
 
 #define BLINK_DEBUG

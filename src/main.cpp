@@ -11,20 +11,19 @@ int main() {
 
     App* app = new App();
     Factory* factory = new Factory(
-        app->physicsComponents,
-        app->renderComponents, app->transformComponents);
+        app->physics_components,
+        app->render_components, app->transform_components);
 
     factory->make_sphere(
         {3.0f, 0.0f, 0.25f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 10.0f});
 
-    // factory->make_girl({5.0f, 0.0f, 0.25f}, {0.0f, 0.0f, 180.0f});
 
-    unsigned int cameraEntity = factory->make_camera(
+    unsigned int camera_entity = factory->make_camera(
         {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f,0.0f});
 
     CameraComponent* camera = new CameraComponent();
-    app->cameraComponent = camera;
-    app->cameraID = cameraEntity;
+    app->camera_component = camera;
+    app->cameraID = camera_entity;
 
     app->set_up_opengl();
     app->make_systems();

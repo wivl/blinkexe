@@ -5,8 +5,8 @@
 
 class CameraSystem {
 private:
-    unsigned int viewLocation;
-    unsigned int cameraPositionLocation;
+    unsigned int view_location;
+    unsigned int camera_position_location;
     glm::vec3 global_up = {0.0f, 0.0f, 1.0f};
     GLFWwindow* window;
 public:
@@ -14,6 +14,6 @@ public:
 
     // 更新摄像机的键盘和鼠标控制
     bool update(
-        std::unordered_map<unsigned int,TransformComponent> &transformComponents,
-        unsigned int cameraID, CameraComponent& cameraComponent, float dt);
+        std::unordered_map<unsigned int,TransformComponent> &transform_components,
+        unsigned int camera_id, CameraComponent& camera_component, float dt);
 };

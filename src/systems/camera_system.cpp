@@ -4,22 +4,22 @@ CameraSystem::CameraSystem(unsigned int shader, GLFWwindow* window) {
     this->window = window;
 
     glUseProgram(shader);
-    viewLocation = glGetUniformLocation(shader, "view");
-    cameraPositionLocation = glGetUniformLocation(shader, "cameraPosition");
+    view_location = glGetUniformLocation(shader, "view");
+    camera_position_location = glGetUniformLocation(shader, "cameraPosition");
 }
 
 bool CameraSystem::update(
-    std::unordered_map<unsigned int,TransformComponent> &transformComponents,
-    unsigned int cameraID, CameraComponent& cameraComponent, float dt) {
+    std::unordered_map<unsigned int,TransformComponent> &transform_components,
+    unsigned int camera_id, CameraComponent& camera_component, float dt) {
 
-    glm::vec3& pos = transformComponents[cameraID].position;
-    glm::vec3& eulers = transformComponents[cameraID].eulers;
+    glm::vec3& pos = transform_components[camera_id].position;
+    glm::vec3& eulers = transform_components[camera_id].eulers;
     float theta = glm::radians(eulers.z);
     float phi = glm::radians(eulers.y);
 
-    glm::vec3& right = cameraComponent.right;
-    glm::vec3& up = cameraComponent.up;
-    glm::vec3& forwards = cameraComponent.forwards;
+    glm::vec3& right = camera_component.right;
+    glm::vec3& up = camera_component.up;
+    glm::vec3& forwards = camera_component.forwards;
 
     forwards = {
         glm::cos(theta) * glm::cos(phi),
@@ -31,8 +31,8 @@ bool CameraSystem::update(
 
     glm::mat4 view = glm::lookAt(pos, pos + forwards, up);
 
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-    glUniform3fv(cameraPositionLocation, 1, glm::value_ptr(pos));
+    glUniformMatrix4fv(view_location, 1, GL_FALSE, glm::value_ptr(view));
+    glUniform3fv(camera_position_location, 1, glm::value_ptr(pos));
 
     //Keys
     glm::vec3 dPos = {0.0f, 0.0f, 0.0f};

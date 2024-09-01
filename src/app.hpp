@@ -21,11 +21,11 @@ public:
     void make_systems();
 
     //Components
-    std::unordered_map<unsigned int, TransformComponent> transformComponents;
-    std::unordered_map<unsigned int, PhysicsComponent> physicsComponents;
-    CameraComponent* cameraComponent;
+    std::unordered_map<unsigned int, TransformComponent> transform_components;
+    std::unordered_map<unsigned int, PhysicsComponent> physics_components;
+    CameraComponent* camera_component;
     unsigned int cameraID;
-    std::unordered_map<unsigned int, RenderComponent> renderComponents;
+    std::unordered_map<unsigned int, RenderComponent> render_components;
 
 private:
     void set_up_glfw();
@@ -35,7 +35,7 @@ private:
     unsigned int shader;
 
     //Systems
-    MotionSystem* motionSystem;
-    CameraSystem* cameraSystem;
-    RenderSystem* renderSystem;
+    MotionSystem* motion_system;
+    CameraSystem* camera_system;
+    RenderSystem* render_system;
 };

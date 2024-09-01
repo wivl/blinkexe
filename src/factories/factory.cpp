@@ -2,17 +2,17 @@
 #include <stb_image.h>
 
 Factory::Factory(
-    std::unordered_map<unsigned int, PhysicsComponent>& physicsComponents,
-    std::unordered_map<unsigned int, RenderComponent>& renderComponents,
-    std::unordered_map<unsigned int, TransformComponent>& transformComponents):
-physicsComponents(physicsComponents),
-renderComponents(renderComponents),
-transformComponents(transformComponents) {
+    std::unordered_map<unsigned int, PhysicsComponent>& physics_components,
+    std::unordered_map<unsigned int, RenderComponent>& render_components,
+    std::unordered_map<unsigned int, TransformComponent>& transform_components):
+physics_components(physics_components),
+render_components(render_components),
+transform_components(transform_components) {
 }
 
 Factory::~Factory() {
-    glDeleteBuffers(VBOs.size(), VBOs.data());
-    glDeleteVertexArrays(VAOs.size(), VAOs.data());
+    glDeleteBuffers(vbos.size(), vbos.data());
+    glDeleteVertexArrays(vaos.size(), vaos.data());
     glDeleteTextures(textures.size(), textures.data());
 }
 
@@ -22,28 +22,28 @@ unsigned int Factory::make_camera(glm::vec3 position, glm::vec3 eulers) {
     transform.position = position;
     transform.eulers = eulers;
 
-    transformComponents[entities_made] = transform;
+    transform_components[entities_made] = transform;
 
     return entities_made++;
 }
 
 
 void Factory::make_cube(glm::vec3 position, glm::vec3 eulers,
-    glm::vec3 eulerVelocity) {
+    glm::vec3 euler_velocity) {
 
 	TransformComponent transform{};
 	transform.position = position;
 	transform.eulers = eulers;
-	transformComponents[entities_made] = transform;
+	transform_components[entities_made] = transform;
 
 	PhysicsComponent physics{};
 	physics.velocity = {0.0f, 0.0f, 0.0f};
-	physics.eulerVelocity = eulerVelocity;
-	physicsComponents[entities_made] = physics;
+	physics.euler_velocity = euler_velocity;
+	physics_components[entities_made] = physics;
 
 	RenderComponent render = make_cube_mesh({0.25f, 0.25f, 0.25f});
 	model_loader.set_texture(render, "../assets/brick.png");
-	renderComponents[entities_made++] = render;
+	render_components[entities_made++] = render;
 }
 
 RenderComponent Factory::make_cube_mesh(glm::vec3 size) {
@@ -96,15 +96,15 @@ RenderComponent Factory::make_cube_mesh(glm::vec3 size) {
          l,  w,  h, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f
     };
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    VAOs.push_back(VAO);
-    glBindVertexArray(VAO);
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    vaos.push_back(vao);
+    glBindVertexArray(vao);
 
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    VBOs.push_back(VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    unsigned int vbo;
+    glGenBuffers(1, &vbo);
+    vbos.push_back(vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
         vertices.data(), GL_STATIC_DRAW);
     //position
@@ -118,41 +118,40 @@ RenderComponent Factory::make_cube_mesh(glm::vec3 size) {
     glEnableVertexAttribArray(2);
 
     RenderComponent record;
-    record.VAO = VAO;
-    record.vertexCount = 36;
+    record.vao = vao;
+    record.vertex_count = 36;
     return record;
 }
 
-// TODO: make girl
 void Factory::make_girl(glm::vec3 position, glm::vec3 eulers) {
     TransformComponent transform{};
     transform.position = position;
     transform.eulers = eulers;
-    transformComponents[entities_made] = transform;
+    transform_components[entities_made] = transform;
 
 
-    glm::mat4 preTransform = glm::mat4(1.0f);
-    preTransform = glm::rotate(preTransform,
+    glm::mat4 pre_transform = glm::mat4(1.0f);
+    pre_transform = glm::rotate(pre_transform,
         glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
-    preTransform = glm::rotate(preTransform,
+    pre_transform = glm::rotate(pre_transform,
         glm::radians(90.0f), { 0.0f, 1.0f, 0.0f });
-    RenderComponent render = model_loader.load("../assets/girl.obj", preTransform);
+    RenderComponent render = model_loader.load("../assets/girl.obj", pre_transform);
     model_loader.set_texture(render, "../assets/stargirl.png");
-    renderComponents[entities_made++] = render;
+    render_components[entities_made++] = render;
 
 }
 
 
-void Factory::make_sphere(glm::vec3 position, glm::vec3 eulers, glm::vec3 eulerVelocity) {
+void Factory::make_sphere(glm::vec3 position, glm::vec3 eulers, glm::vec3 euler_velocity) {
     TransformComponent transform{};
     transform.position = position;
     transform.eulers = eulers;
-    transformComponents[entities_made] = transform;
+    transform_components[entities_made] = transform;
 
     PhysicsComponent physics{};
     physics.velocity = {0.0f, 0.0f, 0.0f};
-    physics.eulerVelocity = eulerVelocity;
-    physicsComponents[entities_made] = physics;
+    physics.euler_velocity = euler_velocity;
+    physics_components[entities_made] = physics;
 
     glm::mat4 preTransform = glm::mat4(1.0f);
     preTransform = glm::rotate(preTransform, glm::radians(90.0f), { 1.0f, 0.0f, 0.0f });
@@ -166,7 +165,7 @@ void Factory::make_sphere(glm::vec3 position, glm::vec3 eulers, glm::vec3 eulerV
     render.roughness = model_loader.make_texture("../assets/rustediron1-alt2-Unreal-Engine/roughness.png");
     render.ao = model_loader.make_texture("../assets/rustediron1-alt2-Unreal-Engine/ao.png");
 
-    renderComponents[entities_made++] = render;
+    render_components[entities_made++] = render;
 }
 
 

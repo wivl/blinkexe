@@ -95,8 +95,8 @@ RenderComponent ModelLoader::load(std::string file_path, glm::mat4 preTransform)
     glEnableVertexAttribArray(2);
 
     RenderComponent render{};
-    render.VAO = vao;
-    render.vertexCount = vertices.size() / 8;
+    render.vao = vao;
+    render.vertex_count = vertices.size() / 8;
     return render;
 
 
